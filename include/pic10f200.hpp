@@ -40,10 +40,12 @@ class PIC10f200 {
 
 private:
 
-    std::array<std::unique_ptr<InstructionHandler>, 6> instructions;
+    std::array<std::unique_ptr<InstructionHandler>, 33> instructions;
 
     Word programMemory[256];
     Byte DataMemory[16];
+
+    uint8_t verbosity;
 
     bool PCH;
 
@@ -77,9 +79,11 @@ public:
     void incrememtPC(Byte offset = 1);
 
     Word currentInstruction();
+    
+    void setVerbosity(uint8_t verbosity);
 
     void reset();
-    void step();
+    void step(int cycles = 1);
     void load_program(); // 
 
 };
