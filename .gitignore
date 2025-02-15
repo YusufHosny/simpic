@@ -1,0 +1,33 @@
+# build files
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# binaries
+*.exe
+*.pdb
+*.obj
+*.o
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+
+# editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+Thumbs.db
+
+# temp files
+*.log
+*.tmp
+
+# references folder
+/references/
