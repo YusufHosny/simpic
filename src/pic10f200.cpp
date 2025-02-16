@@ -73,6 +73,9 @@ void PIC10f200::setPC(uint16_t value) {
 }
 
 Word PIC10f200::currentInstruction() { return this->instructionRegister; }
+Word PIC10f200::nextInstruction() { return this->nextInstructionRegister; }
+void PIC10f200::setNextInstruction(Word instruction) { this->nextInstructionRegister = instruction; }
+
 
 void PIC10f200::setVerbosity(uint8_t verbosity) { this->verbosity = verbosity; }
 
@@ -120,21 +123,25 @@ void PIC10f200::incrememtPC(Byte offset) {
 }
 
 void PIC10f200::reset() {
-    this->PCH = 0;
-    this->PCL() = 0;
+    this->PCH = 1;
+    this->PCL() = 0xFF;
 
     // register reset values
     this->setDMEM(REGISTERS::STATUS, 0b00011000);
     this->setDMEM(REGISTERS::FSR, 0b11100000);
     this->setDMEM(REGISTERS::OSCCAL, 0b11111110);
 
+    this->fetch(); // fetch first instruction
+
     if(verbosity > 0) std::cout << "PIC10f200 reset." << std::endl;
 
 }
 
 void PIC10f200::step(int cycles) {
-    for(int i = 0; i < cycles; i++)
-        this->execute(this->fetch());
+    for(int i = 0; i < cycles; i++) {
+        this->fetch();
+        this->execute();
+    }
 
     if(verbosity > 0) std::cout << "Stepped " << cycles << " cycle(s)." << std::endl;
 }
@@ -143,17 +150,22 @@ void PIC10f200::execute(Word instruction) {
     for(auto& handler : instructions) {
         if(handler->match(instruction)) {
             if(verbosity > 1) std::cout << "executing: " << handler->mnemonic << " (" << instruction << ")" << std::endl;
-
             handler->execute(this);
+            this->incrememtPC();
             return;
         }
     }
     throw std::invalid_argument("Unknown Instruction");
 }
 
+void PIC10f200::execute() {
+    this->execute(instructionRegister);
+}
+
 Word PIC10f200::fetch() {
-    this->instructionRegister = this->programMemory[this->getPC()];
-    this->incrememtPC();
+    this->instructionRegister = this->nextInstructionRegister;
+    this->nextInstructionRegister = this->programMemory[this->getPC()];
+    
     return instructionRegister;
 }
 

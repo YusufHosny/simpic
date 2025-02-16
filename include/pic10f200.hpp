@@ -52,9 +52,11 @@ private:
     Byte W, OPTIONreg, TRISGPIOreg;
 
     Word instructionRegister;
+    Word nextInstructionRegister;
 
     Word fetch();
     void execute(Word instruction);
+    void execute();
 
 public:
     PIC10f200();
@@ -89,6 +91,8 @@ public:
     void incrememtPC(Byte offset = 1);
 
     Word currentInstruction();
+    Word nextInstruction();
+    void setNextInstruction(Word instruction);
     
     void setVerbosity(uint8_t verbosity);
 

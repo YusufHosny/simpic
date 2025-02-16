@@ -99,7 +99,14 @@ void DECF::execute(PIC10f200 *mcu) {
 
 DECFSZ::DECFSZ() : InstructionHandler(InstructionMatcher("001011dfffff"), "DECFSZ") {};
 void DECFSZ::execute(PIC10f200 *mcu) {
-    // TODO
+    Byte f = mcu->getDMEM(this->getf(mcu));
+
+    Byte result = f - 1;
+
+    if(this->getd(mcu)) mcu->setDMEM(this->getf(mcu), result);
+    else mcu->setW(result);
+
+    if(result == 0) mcu->setNextInstruction(0);
 }
 
 INCF::INCF() : InstructionHandler(InstructionMatcher("001010dfffff"), "INCF") {};
@@ -116,7 +123,14 @@ void INCF::execute(PIC10f200 *mcu) {
 
 INCFSZ::INCFSZ() : InstructionHandler(InstructionMatcher("001111dfffff"), "INCFSZ") {};
 void INCFSZ::execute(PIC10f200 *mcu) {
-    // TODO
+    Byte f = mcu->getDMEM(this->getf(mcu));
+
+    Byte result = f + 1;
+
+    if(this->getd(mcu)) mcu->setDMEM(this->getf(mcu), result);
+    else mcu->setW(result);
+
+    if(result == 0) mcu->setNextInstruction(0);
 }
 
 IORWF::IORWF() : InstructionHandler(InstructionMatcher("000100dfffff"), "IORWF") {};
@@ -229,12 +243,20 @@ void BSF::execute(PIC10f200 *mcu) {
 
 BTFSC::BTFSC() : InstructionHandler(InstructionMatcher("0110bbbfffff"), "BTFSC") {};
 void BTFSC::execute(PIC10f200 *mcu) {
-    // TODO
+    Byte b = this->getb(mcu), f = mcu->getDMEM(this->getf(mcu));
+
+    bool result = (f.get() >> b.get()) & 1 ;
+
+    if(!result) mcu->setNextInstruction(0);
 }
 
 BTFSS::BTFSS() : InstructionHandler(InstructionMatcher("0111bbbfffff"), "BTFSS") {};
 void BTFSS::execute(PIC10f200 *mcu) {
-    // TODO
+    Byte b = this->getb(mcu), f = mcu->getDMEM(this->getf(mcu));
+
+    bool result = (f.get() >> b.get()) & 1 ;
+
+    if(result) mcu->setNextInstruction(0);
 }
 
 ANDLW::ANDLW() : InstructionHandler(InstructionMatcher("1110kkkkkkkk"), "ANDLW") {};
