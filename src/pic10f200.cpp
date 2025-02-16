@@ -51,6 +51,18 @@ void PIC10f200::setW(Byte value) {
     if(verbosity > 1) std::cout << "W = " << this->W << std::endl;
 }
 
+Byte PIC10f200::getOption() { return this->OPTIONreg; }
+void PIC10f200::setOption(Byte value) {
+    this->OPTIONreg = value; 
+    if(verbosity > 1) std::cout << "OPTION = " << this->OPTIONreg << std::endl;
+}
+
+Byte PIC10f200::getTris() { return this->TRISGPIOreg; }
+void PIC10f200::setTris(Byte value) {
+    this->TRISGPIOreg = value; 
+    if(verbosity > 1) std::cout << "TRIS = " << this->TRISGPIOreg << std::endl;
+}
+
 uint16_t PIC10f200::getPC() { return ((this->PCH & 0b1) << 8) + this->PCL().get(); }
 void PIC10f200::setPC(uint16_t value) {
     if(value > 0x1FF) throw std::out_of_range("address out of memory space");

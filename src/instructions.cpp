@@ -289,7 +289,7 @@ void MOVLW::execute(PIC10f200 *mcu) {
 
 OPTION::OPTION() : InstructionHandler(InstructionMatcher("000000000010"), "OPTION") {};
 void OPTION::execute(PIC10f200 *mcu) {
-    // TODO
+    mcu->setOption(mcu->getW());
 }
 
 RETLW::RETLW() : InstructionHandler(InstructionMatcher("1000kkkkkkkk"), "RETLW") {};
@@ -304,7 +304,10 @@ void SLEEP::execute(PIC10f200 *mcu) {
 
 TRIS::TRIS() : InstructionHandler(InstructionMatcher("000000000fff"), "TRIS") {};
 void TRIS::execute(PIC10f200 *mcu) {
-    // TODO
+    Byte f = this->getf(mcu);
+    
+    // not sure what f being 6 or 7 should do
+    mcu->setTris(mcu->getW());
 }
 
 XORLW::XORLW() : InstructionHandler(InstructionMatcher("1111kkkkkkkk"), "XORLW") {};

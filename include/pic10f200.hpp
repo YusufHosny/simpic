@@ -64,6 +64,10 @@ public:
 
     Byte getW();
     void setW(Byte value);
+    Byte getOption();
+    void setOption(Byte value);
+    Byte getTris();
+    void setTris(Byte value);
 
     void setTO(bool value);
     void setPD(bool value);
