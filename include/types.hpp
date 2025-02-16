@@ -46,6 +46,22 @@ public:
     Byte& operator^=(const Byte &b) { value ^= b.value; return *this; }
     Byte& operator<<=(size_t shift) { value <<= shift; return *this; }
     Byte& operator>>=(size_t shift) { value >>= shift; return *this; }
+
+    static bool carries(const Byte &a, const Byte& b) {
+        return (a.get() + b.get()) > 0xFF;
+    }
+
+    static bool borrows(const Byte &a, const Byte& b) {
+        return a.get() < b.get();
+    }
+
+    static bool digitCarries(const Byte &a, const Byte &b) {
+        return ((a.get() & 0x0F) + (b.get() & 0x0F)) > 0x0F;
+    }
+
+    static bool digitBorrows(const Byte &a, const Byte &b) {
+        return (a.get() & 0x0F) < (b.get() & 0x0F);
+    }
     
     friend std::ostream& operator<<(std::ostream &os, const Byte &b) {
         os << std::bitset<8>(b.value);

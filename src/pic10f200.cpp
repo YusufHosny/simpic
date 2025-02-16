@@ -64,6 +64,37 @@ Word PIC10f200::currentInstruction() { return this->instructionRegister; }
 
 void PIC10f200::setVerbosity(uint8_t verbosity) { this->verbosity = verbosity; }
 
+void PIC10f200::setTO(bool value) { 
+    Byte byte = this->getDMEM(REGISTERS::STATUS);
+    byte.setBit(STATUSBITS::TO, value);
+    this->setDMEM(REGISTERS::STATUS, byte);
+}
+
+void PIC10f200::setPD(bool value){ 
+    Byte byte = this->getDMEM(REGISTERS::STATUS);
+    byte.setBit(STATUSBITS::PD, value);
+    this->setDMEM(REGISTERS::STATUS, byte);
+}
+
+void PIC10f200::setZ(bool value) { 
+    Byte byte = this->getDMEM(REGISTERS::STATUS);
+    byte.setBit(STATUSBITS::Z, value);
+    this->setDMEM(REGISTERS::STATUS, byte);
+}
+
+void PIC10f200::setDC(bool value){ 
+    Byte byte = this->getDMEM(REGISTERS::STATUS);
+    byte.setBit(STATUSBITS::DC, value);
+    this->setDMEM(REGISTERS::STATUS, byte);
+}
+
+void PIC10f200::setC(bool value) { 
+    Byte byte = this->getDMEM(REGISTERS::STATUS);
+    byte.setBit(STATUSBITS::C, value);
+    this->setDMEM(REGISTERS::STATUS, byte);
+}
+
+
 Byte& PIC10f200::INDF() { return this->DataMemory[this->DataMemory[REGISTERS::FSR].get()]; }
 Byte& PIC10f200::TMR0() { return this->DataMemory[REGISTERS::TMR0]; }
 Byte& PIC10f200::PCL() { return this->DataMemory[REGISTERS::PCL]; }
@@ -80,6 +111,11 @@ void PIC10f200::reset() {
     this->PCH = 0;
     this->PCL() = 0;
 
+    // register reset values
+    this->setDMEM(REGISTERS::STATUS, 0b00011000);
+    this->setDMEM(REGISTERS::FSR, 0b11100000);
+    this->setDMEM(REGISTERS::OSCCAL, 0b11111110);
+
     if(verbosity > 0) std::cout << "PIC10f200 reset." << std::endl;
 
 }
@@ -94,8 +130,9 @@ void PIC10f200::step(int cycles) {
 void PIC10f200::execute(Word instruction) {
     for(auto& handler : instructions) {
         if(handler->match(instruction)) {
-            handler->execute(this);
             if(verbosity > 1) std::cout << "executing: " << handler->mnemonic << " (" << instruction << ")" << std::endl;
+
+            handler->execute(this);
             return;
         }
     }

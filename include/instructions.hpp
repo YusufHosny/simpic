@@ -27,6 +27,11 @@ public:
 
     bool match(const Word input) const;
     virtual void execute(PIC10f200 *mcu) = 0;
+
+    Byte getf(PIC10f200 *mcu);
+    Word getk(PIC10f200 *mcu, uint8_t length);
+    bool getd(PIC10f200 *mcu);
+    Byte getb(PIC10f200 *mcu);
 };
 
 class ADDWF : public InstructionHandler {

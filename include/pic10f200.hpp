@@ -49,7 +49,7 @@ private:
 
     bool PCH;
 
-    Byte W; // working register
+    Byte W, OPTIONreg, TRISGPIOreg;
 
     Word instructionRegister;
 
@@ -64,6 +64,12 @@ public:
 
     Byte getW();
     void setW(Byte value);
+
+    void setTO(bool value);
+    void setPD(bool value);
+    void setZ(bool value);
+    void setDC(bool value);
+    void setC(bool value);
 
     uint16_t getPC();
     void setPC(uint16_t address);

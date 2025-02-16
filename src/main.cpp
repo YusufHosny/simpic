@@ -7,13 +7,7 @@ int main(void) {
 
     pic.load_program();
     int ix = 0;
-    pic.step(); // NOP
-    pic.step(); // MOVLW
-    pic.step(); // XORLW
-    pic.step(); // ANDLW
-    pic.step(); // IORLW
-    pic.step(); // GOTO 6
-    pic.step(); // NOP
+    pic.step(10); 
 
     return 0;
 }
